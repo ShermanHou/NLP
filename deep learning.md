@@ -28,7 +28,7 @@ $a =\frac{1}{1 + exp(−(w^Tx + b))}$
 
 We can also combine the weights and bias term above to equivalently formulate:
 
-$a =\frac{1}{1 + exp(−[w^T\; b] · [x\; 1])}$
+$a =\frac{1}{1 + exp(−[w^T\quad b] · [x\quad 1])}$
 
 > the later 'b' and '1' are just following the relevant former, padding if necessary
 
