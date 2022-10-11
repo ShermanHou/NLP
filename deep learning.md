@@ -40,13 +40,9 @@ $$
 > 
 > the following figure shows all the things.
 
-<<<<<<< HEAD
 <div align=center>
 <img title="" src="/assets/DLf2.png" alt="avatar" data-align="center">
 </div>
-=======
-<img title="" src="/assets/DLf2.png" alt="avatar" data-align="center">[H]
->>>>>>> d79d985fab437b6325f7b9457e23a3b0c901e313
 
 ____
 
@@ -54,13 +50,9 @@ ____
 
 > We extend the idea above to `multiple neurons`, the case where the input **x** is fed as an common input to them.
 
-<<<<<<< HEAD
 <div align=center>
 <img title="" src="/assets/DLf3.png" alt="avatar" data-align="center">
 </div>
-=======
-<img title="" src="/assets/DLf3.png" alt="avatar" data-align="center">[H]
->>>>>>> d79d985fab437b6325f7b9457e23a3b0c901e313
 
 If we refer to the different neurons’ weights as $\{w^{(1)}, · · · , w^{(m)}\}$and the biases as ${b_1,···,b_m}$, we can say the respective activations are $\{a_1, ··· , a_m\}$:
 
@@ -126,4 +118,4 @@ We can then use **a combination of these activations** to perform **classificati
 
 ____
 
-###  Feed-forward Computation
+### Feed-forward Computation
