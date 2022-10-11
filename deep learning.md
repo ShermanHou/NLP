@@ -62,8 +62,6 @@ $$
 
 > each weights vector and biases constitute a units set of a neuron
 
-____
-
 Let us define the following abstractions to keep the notation simpleand useful for more complex networks:
 
 $$
@@ -119,3 +117,81 @@ We can then use **a combination of these activations** to perform **classificati
 ____
 
 ### Feed-forward Computation
+
+So far we have seen how an input vector$x ∈ \mathbb R^n$ can be fed to a layer of activation function units to create activations $a ∈ \mathbb R^m.$
+
+**But what is theintuition behind doing so?**
+
+> Let us consider the following `named entity recognition(NER)`problem in NLP as an example:
+
+<div align=center>
+"Museums in Paris are amazing"
+</div>
+
+> Here, we want to classify whether or not the center word "Paris" is a named-entity.
+> 
+> In such cases, it is very likely that we would not just want to capture the presence of words in the window of word vectors but some other interactions between the words in order to make theclassifification. 
+> 
+> Such non-linear decisions can often not be captured by inputs fed directly to a Softmax function, but instead require the scoring of the intermediate layer.
+> 
+> We can thus use `another matrix` $U ∈ \mathbb R^{m×1}$to generate an unnormalized score s for a classification task from the activations:
+> 
+> $$
+> s = U^Ta = U^T f(Wx + b)
+> $$
+> 
+> where f is the activation function.
+
+### Maximum Margin Objective Function
+
+> Like most machine learning models, such as `loss` function, neural networks also need an `optimization objective` as a measure of error or goodness which we want to minimize or maximize respectively. 
+
+Here, we will discuss **a popular error metric** known as the `maximum margin objective`, which is most commonly associated with `Support Vector Machines(SVMs)`
+
+The idea behind using this objective is very easy, just to:
+
+**ensure that** `the score computed for "true" labeled data points` is higher than `the score computed for "false" labeled data points`. 
+
+> Using the previous example, if we call the score computed for the "true" labeled window "Museums in Paris are amazing" as **s** 
+> 
+> and the score computed for the "false" labeled window "Not all museums in Paris" as $s_c$ (subscripted as c to signify that the window is "corrupt") 
+> 
+> Then, our objective function would be to:
+> 
+>         maximize $(s − s_c) $ or to minimize$ (s_c − s)$
+> 
+> However, we modify our objective to ensure that error is only computed if $s_c > s ⇒ (s_c − s) > 0$. The intuition behind doing this is that we `only care` the the "true" data point have a higher score than the "false" data point and that the rest does not matter. Thus, we want our error to be:
+
+$$
+(s_c − s)\quad if\,s_c > s,\quad else\, 0
+$$
+
+> Thus, our optimization objective is now:
+
+$$
+minimize J = max(s_c − s, 0)
+$$
+
+> However, the above optimization objective is risky in the sense that it does not attempt to `create a margin of safety`. 
+> 
+> We would want the "true" labeled data point to score **higher than the "false" labeled data point by some positive margin ∆**. 
+> 
+> In other words, we would want error to be calculated if $(s − s_c < ∆)$ and not just when$(s − s_c < 0)$
+> 
+> Thus, we modify the optimization objective:
+
+$$
+minimize J = max(∆ + s_c − s, 0)
+$$
+
+> In the above formulation 
+> 
+> $$
+> s_c = U^T f(Wx_c + b)\quad and\quad s = U^T f(Wx + b)
+> $$
+
+___
+
+### Training with Backpropagation – Elemental
+
+
