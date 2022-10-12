@@ -122,22 +122,22 @@ So far we have seen how an input vector$x ∈ \mathbb R^n$ can be fed to a layer
 
 **But what is theintuition behind doing so?**
 
-> Let us consider the following `named entity recognition(NER)`problem in NLP as an example:
-
-<div align=center>
-"Museums in Paris are amazing"
-</div>
-
+> Let us consider the following `named entity recognition(NER)` problem in NLP as an example:
+> 
+> <div align=center>
+> "Museums in Paris are amazing"
+> </div>
+> 
 > Here, we want to classify whether or not the center word "Paris" is a named-entity.
 > 
 > In such cases, it is very likely that we would not just want to capture the presence of words in the window of word vectors but some other interactions between the words in order to make theclassifification. 
 > 
 > Such non-linear decisions can often not be captured by inputs fed directly to a Softmax function, but instead require the scoring of the intermediate layer.
 > 
-> We can thus use `another matrix` $U ∈ \mathbb R^{m×1}$to generate an unnormalized score s for a classification task from the activations:
+> We can thus use `another matrix` $\mathcal U ∈ \mathbb R^{m×1}$to generate an unnormalized score s for a classification task from the activations:
 > 
 > $$
-> s = U^Ta = U^T f(Wx + b)
+> s = \mathcal U^Ta = \mathcal U^T f(Wx + b)
 > $$
 > 
 > where f is the activation function.
@@ -161,17 +161,16 @@ The idea behind using this objective is very easy, just to:
 >         maximize $(s − s_c) $ or to minimize$ (s_c − s)$
 > 
 > However, we modify our objective to ensure that error is only computed if $s_c > s ⇒ (s_c − s) > 0$. The intuition behind doing this is that we `only care` the the "true" data point have a higher score than the "false" data point and that the rest does not matter. Thus, we want our error to be:
-
-$$
-(s_c − s)\quad if\,s_c > s,\quad else\, 0
-$$
-
+> $$
+> (s_c − s)\quad if\,s_c > s,\quad else\, 0
+> $$
+> 
 > Thus, our optimization objective is now:
-
-$$
-minimize J = max(s_c − s, 0)
-$$
-
+> 
+> $$
+> minimize J = max(s_c − s, 0)
+> $$
+> 
 > However, the above optimization objective is risky in the sense that it does not attempt to `create a margin of safety`. 
 > 
 > We would want the "true" labeled data point to score **higher than the "false" labeled data point by some positive margin ∆**. 
@@ -179,19 +178,72 @@ $$
 > In other words, we would want error to be calculated if $(s − s_c < ∆)$ and not just when$(s − s_c < 0)$
 > 
 > Thus, we modify the optimization objective:
-
-$$
-minimize J = max(∆ + s_c − s, 0)
-$$
-
+> 
+> $$
+> minimize J = max(∆ + s_c − s, 0)
+> $$
+> 
 > In the above formulation 
 > 
 > $$
-> s_c = U^T f(Wx_c + b)\quad and\quad s = U^T f(Wx + b)
+> s_c = \mathcal U^T f(Wx_c + b)\quad and\quad s = \mathcal U^T f(Wx + b)
 > $$
 
 ___
 
 ### Training with Backpropagation – Elemental
+
+> In this section we discuss how we train the different parameters in the model when the cost $J$ above is positive. No parameter updates are necessary if the cost is 0. 
+
+Since we typically update parameters using gradient descent (or a variant such as SGD), we typically need the **gradient information** for any parameter as required in the update equation:
+
+$$
+θ^{(t+1)} = θ^{(t)} − α∇θ^{(t)}J
+
+$$
+
+`Backpropagation` is technique that allows us to use the `chain rule of differentiation to calculate loss gradients` for **any parameter** used in the feed-forward computation on the model. 
+
+> To understand this further, let us understand the toy network shown in Figure below for which we will perform backpropagation. Here, we use a neural network with a single hidden layer and a single unit output.
+> 
+> <div align=center>
+> <img title="" src="/assets/DLf5.png" alt="avatar" data-align="center">
+> </div>
+
+Let us establish some notation that will make iteasier to generalize this model later:
+
+> - $x_i$ is an **input** to the neural network.
+> 
+> - $s$ is the **output** of the neural network.
+>   
+>   **layer**
+> 
+> - Each layer (including the input and output layers) has neurons which receive an input and produce an output. The $j$-th neuron of layer $k$ receives the **scalar input** $z^{(k)}_j$and produces the **scalar activation output** $a^{(k)}_j$.
+> 
+> - We will call the `backpropagated error` calculated at $z^{(k)}_j$as $\delta^{(k)}_j$
+> 
+> - Layer 1 refers to the input layer and not the first hidden layer. For the input layer, $x_j = z^{(1)}_j = a^{(1)}_j$.
+> 
+> - $W^{(k)}$ is the **transfer matrix** that maps the output from the $k$-th layer to the input to the$ (k + 1)$-th.
+>   
+>   Thus, $W^{(1)} = W$  and $W^{(2)} = \mathcal U$ to put this new generalized notation $\mathcal U$
+
+**Let us begin:** 
+
+Suppose the cost $J= (1 + s_c − s)$ is positive and we want to perform the update of parameter $W^{(1)}_{14}$ , we must realize that $W^{(1)}_{14}$ **only contributes to** $z^{(2)}_1$ and thus $a^{(2)}_1$. 
+
+This fact is crucial to understanding backpropagation–backpropagated gradients are **only affected by values they contribute to**.
+
+
+
+$a^{(2)}_1$ is consequently used in the forward computation of score by multiplication with $W^{(2)}_{1}$. We can see from the max-margin loss that:
+
+$$
+\frac{\partial J}{\partial s}=-\frac{\partial J}{\partial s_c}=-1
+$$
+
+Therefore we will work with $\frac{\partial s}{\partial W^{(1)}_{ij}}$ here for simplicity. 
+
+Thus,
 
 
