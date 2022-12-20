@@ -1,6 +1,6 @@
 # NLP
 
-🎄22fall NLP interest group
+22fall NLP兴趣小组随缘听课 (
 
 follow Stanford CS224n Natural Language Processing with Deep Learning course 
 
